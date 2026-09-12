@@ -63,7 +63,7 @@ public class Reservation {
     private BigDecimal lateFee;
 
     @Column
-    private String returnCondition;
+    private Condition returnCondition;
 
     @Column
     private String notes;
@@ -104,7 +104,7 @@ public class Reservation {
         appendNote(withCallerNote("Checked out on " + checkedOutAt, notes));
     }
 
-    public void returnBook(Instant returnedAt, String returnCondition, String notes) {
+    public void returnBook(Instant returnedAt, Condition returnCondition, String notes) {
         if (status != Status.CHECKED_OUT) {
             throw new IllegalStateException("Cannot return a reservation with status " + status);
         }
@@ -204,7 +204,7 @@ public class Reservation {
         return lateFee;
     }
 
-    public String getReturnCondition() {
+    public Condition getReturnCondition() {
         return returnCondition;
     }
 
