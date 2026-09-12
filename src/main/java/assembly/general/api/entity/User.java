@@ -1,9 +1,7 @@
 package assembly.general.api.entity;
+
 import jakarta.persistence.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -23,8 +21,8 @@ public class User {
     @Column(unique = true, nullable = false, length = 150)
     private String email;
 
-    @Column(nullable = false, length = 150)
-    private String password;
+    @Column(name = "password_hash", nullable = false, length = 255)
+    private String passwordHash;
 
     @Column(nullable = false, length = 100)
     private String firstName;
@@ -32,7 +30,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String lastName;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 20)
     private String phoneNumber;
 
     @Enumerated(EnumType.STRING)
@@ -43,9 +41,8 @@ public class User {
     @Column(nullable = false, length = 20)
     private MembershipStatus membershipStatus = MembershipStatus.PENDING;
 
-    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDate memberSince;
+    private LocalDate memberSince = LocalDate.now();
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -56,27 +53,24 @@ public class User {
     private Instant updatedAt;
 
     protected User() {
-
     }
 
-    public User(String email, String password, String firstName,
-                String lastName, String phoneNumber, Role role,
-                MembershipStatus membershipStatus) {
+    public User(
+            String email,
+            String passwordHash,
+            String firstName,
+            String lastName,
+            String phoneNumber
+    ) {
         this.email = email;
-        this.password = password;
+        this.passwordHash = passwordHash;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.role = role;
-        this.membershipStatus = membershipStatus;
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
     }
 
     public String getEmail() {
@@ -87,12 +81,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public String getFirstName() {
@@ -146,6 +140,4 @@ public class User {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
-
-
 }
