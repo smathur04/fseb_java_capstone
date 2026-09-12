@@ -71,8 +71,20 @@ public class Book {
 
     }
 
-    public Book(String isbn) {
+    public Book(String isbn, String title, String author, String genre, Integer publicationYear,
+                String description, String publisher, Integer pageCount, String language,
+                Integer totalCopies, Integer availableCopies) {
         this.isbn = isbn;
+        this.title = title;
+        this.author = author;
+        this.genre = genre;
+        this.publicationYear = publicationYear;
+        this.description = description;
+        this.publisher = publisher;
+        this.pageCount = pageCount;
+        this.language = language;
+        this.totalCopies = totalCopies;
+        this.availableCopies = availableCopies;
     }
 
     public UUID getId() {
