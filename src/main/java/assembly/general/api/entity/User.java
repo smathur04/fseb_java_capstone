@@ -39,10 +39,11 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private MembershipStatus membershipStatus = MembershipStatus.PENDING;
+    private MembershipStatus membershipStatus = MembershipStatus.ACTIVE;
 
+    @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDate memberSince = LocalDate.now();
+    private Instant memberSince;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -129,7 +130,7 @@ public class User {
         this.membershipStatus = membershipStatus;
     }
 
-    public LocalDate getMemberSince() {
+    public Instant getMemberSince() {
         return memberSince;
     }
 
