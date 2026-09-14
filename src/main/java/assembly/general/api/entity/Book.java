@@ -67,7 +67,7 @@ public class Book {
     @Version
     private Long version;
 
-    public Book() {
+    protected Book() {
 
     }
 

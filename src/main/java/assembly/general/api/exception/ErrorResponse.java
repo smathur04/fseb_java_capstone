@@ -1,4 +1,4 @@
-package assembly.general.api.dto;
+package assembly.general.api.exception;
 
 import java.time.Instant;
 

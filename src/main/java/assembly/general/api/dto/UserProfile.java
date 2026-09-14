@@ -2,19 +2,20 @@ package assembly.general.api.dto;
 
 import assembly.general.api.entity.MembershipStatus;
 import assembly.general.api.entity.Role;
-import assembly.general.api.entity.Status;
 
 import java.time.Instant;
 import java.util.UUID;
 
-public record UserRegistrationResponse (
+public record UserProfile(
         UUID userId,
         String email,
         String firstName,
         String lastName,
+        String phoneNumber,
         Role role,
         MembershipStatus membershipStatus,
-        Instant createdAt,
-        String message
+        Instant memberSince,
+        int activeReservations,
+        int borrowingHistory
 ) {
 }

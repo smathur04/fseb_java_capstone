@@ -18,15 +18,18 @@ public record UserRegistrationRequest (
     )
     String password,
 
+    @NotBlank(message = "First name is required")
+    String firstName,
+
+    @NotBlank(message = "Last name is required")
+    String lastName,
+
     @NotBlank(message = "Phone number is required")
     @Pattern(
             regexp = "^\\+?[0-9]{10,15}$",
             message = "Phone number must be a valid format"
     )
-    String phoneNumber,
-
-    @NotBlank(message = "Name is required")
-    String name
+    String phoneNumber
 ) {
 }
 
