@@ -3,6 +3,7 @@ package assembly.general.api.controllers;
 import assembly.general.api.dto.*;
 import assembly.general.api.security.AuthenticatedUser;
 import assembly.general.api.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(created);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @GetMapping("/users/profile")
     public ResponseEntity<UserProfile> getProfile(@AuthenticationPrincipal AuthenticatedUser principal) {
         UserProfile profile = userService.profile(principal.userId());
