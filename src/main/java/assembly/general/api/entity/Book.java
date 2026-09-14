@@ -2,6 +2,7 @@ package assembly.general.api.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,14 +13,42 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "books")
+@Table(
+        name = "books",
+        indexes = {
+                @Index(
+                        name = "idx_books_title",
+                        columnList = "title"
+                ),
+                @Index(
+                        name = "idx_books_author",
+                        columnList = "author"
+                ),
+                @Index(
+                        name = "idx_books_genre",
+                        columnList = "genre"
+                ),
+                @Index(
+                        name = "idx_books_publication_year",
+                        columnList = "publication_year"
+                ),
+                @Index(
+                        name = "idx_books_available_copies",
+                        columnList = "available_copies"
+                )
+        }
+)
 public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true, nullable = false, length = 20)
+    @Column(
+            unique = true,
+            nullable = false,
+            length = 20
+    )
     private String isbn;
 
     @Column(nullable = false)
@@ -32,10 +61,16 @@ public class Book {
     private String genre;
 
     @Min(0)
-    @Column(nullable = false)
+    @Column(
+            name = "publication_year",
+            nullable = false
+    )
     private Integer publicationYear;
 
-    @Column(nullable = false, length = 500)
+    @Column(
+            nullable = false,
+            length = 500
+    )
     private String description;
 
     @Column(nullable = false)
@@ -45,7 +80,10 @@ public class Book {
     @Column(nullable = false)
     private Integer pageCount;
 
-    @Column(nullable = false, length = 50)
+    @Column(
+            nullable = false,
+            length = 50
+    )
     private String language;
 
     @Min(0)
@@ -53,11 +91,17 @@ public class Book {
     private Integer totalCopies;
 
     @Min(0)
-    @Column(nullable = false)
+    @Column(
+            name = "available_copies",
+            nullable = false
+    )
     private Integer availableCopies;
 
     @CreatedDate
-    @Column(nullable = false, updatable = false)
+    @Column(
+            nullable = false,
+            updatable = false
+    )
     private Instant createdAt;
 
     @LastModifiedDate
@@ -68,12 +112,21 @@ public class Book {
     private Long version;
 
     protected Book() {
-
     }
 
-    public Book(String isbn, String title, String author, String genre, Integer publicationYear,
-                String description, String publisher, Integer pageCount, String language,
-                Integer totalCopies, Integer availableCopies) {
+    public Book(
+            String isbn,
+            String title,
+            String author,
+            String genre,
+            Integer publicationYear,
+            String description,
+            String publisher,
+            Integer pageCount,
+            String language,
+            Integer totalCopies,
+            Integer availableCopies
+    ) {
         this.isbn = isbn;
         this.title = title;
         this.author = author;
@@ -187,21 +240,30 @@ public class Book {
         return updatedAt;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
     public void checkOutBook() {
         if (availableCopies == 0) {
-            throw new IllegalStateException("No copies available to check out.");
+            throw new IllegalStateException(
+                    "No copies available to check out."
+            );
         }
+
         availableCopies--;
     }
 
     public void returnBook() {
-        if (Objects.equals(availableCopies, totalCopies)) {
-            throw new IllegalStateException("Available copies can not exceed total copies.");
+        if (Objects.equals(
+                availableCopies,
+                totalCopies
+        )) {
+            throw new IllegalStateException(
+                    "Available copies cannot exceed total copies."
+            );
         }
-        availableCopies++;
-    }
 
-    public Long getVersion() {
-        return version;
+        availableCopies++;
     }
 }
