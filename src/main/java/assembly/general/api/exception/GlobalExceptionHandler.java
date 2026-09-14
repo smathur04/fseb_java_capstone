@@ -1,6 +1,7 @@
 package assembly.general.api.exception;
 
 import org.springframework.dao.DataIntegrityViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,14 +11,21 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
+
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.time.Instant;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
@@ -34,7 +42,40 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ExceptionHandler(
+            ReservationBusinessException.class
+    )
+    public ResponseEntity<Map<String, Object>> handleReservationBusiness(
+            ReservationBusinessException ex
+    ) {
+        Map<String, Object> response =
+                new LinkedHashMap<>();
+
+        response.put(
+                "error",
+                ex.getError()
+        );
+
+        response.put(
+                "message",
+                ex.getMessage()
+        );
+
+        if (ex.getDetailName() != null) {
+            response.put(
+                    ex.getDetailName(),
+                    ex.getDetailValue()
+            );
+        }
+
+        return ResponseEntity
+                .badRequest()
+                .body(response);
+    }
+
+    @ExceptionHandler(
+            HttpMessageNotReadableException.class
+    )
     public ResponseEntity<ErrorResponse> handleUnreadableBody(
             HttpMessageNotReadableException ex
     ) {
@@ -45,7 +86,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(
+            MethodArgumentNotValidException.class
+    )
     public ResponseEntity<ErrorResponse> handleValidation(
             MethodArgumentNotValidException ex
     ) {
@@ -56,7 +99,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ExceptionHandler(
+            MissingServletRequestParameterException.class
+    )
     public ResponseEntity<ErrorResponse> handleMissingParam(
             MissingServletRequestParameterException ex
     ) {
@@ -67,7 +112,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ExceptionHandler(
+            MethodArgumentTypeMismatchException.class
+    )
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
             MethodArgumentTypeMismatchException ex
     ) {
@@ -78,7 +125,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
+    @ExceptionHandler(
+            BadCredentialsException.class
+    )
     public ResponseEntity<ErrorResponse> handleBadCredentials(
             BadCredentialsException ex
     ) {
@@ -89,7 +138,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(BadLoginCredException.class)
+    @ExceptionHandler(
+            BadLoginCredException.class
+    )
     public ResponseEntity<ErrorResponse> handleBadLoginCredentials(
             BadLoginCredException ex
     ) {
@@ -100,7 +151,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(InsufficientAuthenticationException.class)
+    @ExceptionHandler(
+            InsufficientAuthenticationException.class
+    )
     public ResponseEntity<ErrorResponse> handleInsufficientAuth(
             InsufficientAuthenticationException ex
     ) {
@@ -111,7 +164,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler(
+            AccessDeniedException.class
+    )
     public ResponseEntity<ErrorResponse> handleAccessDenied(
             AccessDeniedException ex
     ) {
@@ -122,7 +177,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler(
+            NoHandlerFoundException.class
+    )
     public ResponseEntity<ErrorResponse> handleNoHandler(
             NoHandlerFoundException ex
     ) {
@@ -133,7 +190,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(ResourceNotFoundException.class)
+    @ExceptionHandler(
+            ResourceNotFoundException.class
+    )
     public ResponseEntity<ErrorResponse> handleNotFound(
             ResourceNotFoundException ex
     ) {
@@ -144,7 +203,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
+    @ExceptionHandler(
+            NoSuchElementException.class
+    )
     public ResponseEntity<ErrorResponse> handleNoSuchElement(
             NoSuchElementException ex
     ) {
@@ -155,7 +216,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ExceptionHandler(
+            HttpRequestMethodNotSupportedException.class
+    )
     public ResponseEntity<ErrorResponse> handleMethodNotAllowed(
             HttpRequestMethodNotSupportedException ex
     ) {
@@ -166,7 +229,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ExceptionHandler(
+            DataIntegrityViolationException.class
+    )
     public ResponseEntity<ErrorResponse> handleDataIntegrity(
             DataIntegrityViolationException ex
     ) {
@@ -177,7 +242,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(IllegalStateException.class)
+    @ExceptionHandler(
+            IllegalStateException.class
+    )
     public ResponseEntity<ErrorResponse> handleIllegalState(
             IllegalStateException ex
     ) {
@@ -188,7 +255,9 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
+    @ExceptionHandler(
+            IllegalArgumentException.class
+    )
     public ResponseEntity<ErrorResponse> handleIllegalArgument(
             IllegalArgumentException ex
     ) {

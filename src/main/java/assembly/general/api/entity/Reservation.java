@@ -1,6 +1,7 @@
 package assembly.general.api.entity;
 
 import jakarta.persistence.*;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,9 +16,14 @@ import java.util.UUID;
 @Table(name = "reservations")
 public class Reservation {
 
-    private static final BigDecimal LATE_FEE_PER_DAY = new BigDecimal("1.00");
-    private static final Duration RESERVATION_EXPIRY = Duration.ofDays(7);
-    private static final Duration CHECK_OUT_EXPIRY = Duration.ofDays(14);
+    private static final BigDecimal LATE_FEE_PER_DAY =
+            new BigDecimal("1.00");
+
+    private static final Duration RESERVATION_EXPIRY =
+            Duration.ofDays(7);
+
+    private static final Duration CHECK_OUT_EXPIRY =
+            Duration.ofDays(14);
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -70,7 +76,10 @@ public class Reservation {
     private String notes;
 
     @CreatedDate
-    @Column(updatable = false, nullable = false)
+    @Column(
+            updatable = false,
+            nullable = false
+    )
     private Instant createdAt;
 
     @LastModifiedDate
@@ -83,66 +92,144 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public Reservation(Book book, User user, Instant reservedAt, String notes) {
+    public Reservation(
+            Book book,
+            User user,
+            Instant reservedAt,
+            String notes
+    ) {
         this.book = book;
         this.user = user;
         this.status = Status.RESERVED;
         this.reservedAt = reservedAt;
-        this.expiresAt = reservedAt.plus(RESERVATION_EXPIRY);
-        appendNote(withCallerNote("Reserved on " + reservedAt, notes));
+        this.expiresAt =
+                reservedAt.plus(RESERVATION_EXPIRY);
+
+        appendNote(
+                withCallerNote(
+                        "Reserved on " + reservedAt,
+                        notes
+                )
+        );
     }
 
-    public void checkOut(Instant checkedOutAt, String notes) {
+    public void checkOut(
+            Instant checkedOutAt,
+            String notes
+    ) {
         if (status != Status.RESERVED) {
-            throw new IllegalStateException("Cannot check out a reservation with status " + status);
+            throw new IllegalStateException(
+                    "Cannot check out a reservation with status "
+                            + status
+            );
         }
+
         this.status = Status.CHECKED_OUT;
         this.checkedOutAt = checkedOutAt;
-        this.dueDateAt = checkedOutAt.plus(CHECK_OUT_EXPIRY);
+        this.dueDateAt =
+                checkedOutAt.plus(CHECK_OUT_EXPIRY);
         this.renewalCount = 0;
         this.lateDays = 0;
         this.lateFee = new BigDecimal("0.00");
-        appendNote(withCallerNote("Checked out on " + checkedOutAt, notes));
+
+        appendNote(
+                withCallerNote(
+                        "Checked out on " + checkedOutAt,
+                        notes
+                )
+        );
     }
 
-    public void returnBook(Instant returnedAt, Condition returnCondition, String notes) {
+    public void returnBook(
+            Instant returnedAt,
+            Condition returnCondition,
+            String notes
+    ) {
         if (status != Status.CHECKED_OUT) {
-            throw new IllegalStateException("Cannot return a reservation with status " + status);
+            throw new IllegalStateException(
+                    "Cannot return a reservation with status "
+                            + status
+            );
         }
+
         this.returnedAt = returnedAt;
         this.returnCondition = returnCondition;
+
         this.lateDays = calculateLateDays();
         this.lateFee = calculateLateFee();
 
-        String lateNote = lateDays > 0
-                ? " - " + lateDays + " day(s) late, fee: $" + lateFee
-                : "";
-        appendNote(withCallerNote("Returned on " + returnedAt + lateNote, notes));
+        String lateNote =
+                lateDays > 0
+                        ? " - "
+                        + lateDays
+                        + " day(s) late, fee: $"
+                        + lateFee
+                        : "";
+
+        appendNote(
+                withCallerNote(
+                        "Returned on "
+                                + returnedAt
+                                + lateNote,
+                        notes
+                )
+        );
 
         this.status = Status.RETURNED;
     }
 
-    public void cancel(Instant cancelledAt, String cancellationReason, String notes) {
+    public void cancel(
+            Instant cancelledAt,
+            String cancellationReason,
+            String notes
+    ) {
         if (status != Status.RESERVED) {
-            throw new IllegalStateException("Cannot cancel a reservation with status " + status);
+            throw new IllegalStateException(
+                    "Cannot cancel a reservation with status "
+                            + status
+            );
         }
+
         this.status = Status.CANCELLED;
         this.cancelledAt = cancelledAt;
-        String reasonPart = (cancellationReason == null || cancellationReason.isBlank())
-                ? ""
-                : ": " + cancellationReason;
-        appendNote(withCallerNote("Cancelled on " + cancelledAt + reasonPart, notes));
+
+        String reasonPart =
+                cancellationReason == null
+                        || cancellationReason.isBlank()
+                        ? ""
+                        : ": " + cancellationReason;
+
+        appendNote(
+                withCallerNote(
+                        "Cancelled on "
+                                + cancelledAt
+                                + reasonPart,
+                        notes
+                )
+        );
     }
 
-    private String withCallerNote(String systemMessage, String callerNote) {
-        if (callerNote == null || callerNote.isBlank()) {
+    private String withCallerNote(
+            String systemMessage,
+            String callerNote
+    ) {
+        if (callerNote == null
+                || callerNote.isBlank()) {
             return systemMessage;
         }
-        return systemMessage + "\n" + callerNote;
+
+        return systemMessage
+                + "\n"
+                + callerNote;
     }
 
     private void appendNote(String note) {
-        this.notes = (notes == null || notes.isBlank()) ? note : notes + "\n\n" + note;
+        this.notes =
+                notes == null || notes.isBlank()
+                        ? note
+                        : notes
+                        + "\n\n"
+                        + note;
     }
 
     public UUID getId() {
@@ -229,16 +316,29 @@ public class Reservation {
         if (dueDateAt == null) {
             return 0;
         }
-        Instant compareTo = returnedAt != null ? returnedAt : Instant.now();
+
+        Instant compareTo =
+                returnedAt != null
+                        ? returnedAt
+                        : Instant.now();
+
         if (!compareTo.isAfter(dueDateAt)) {
             return 0;
         }
-        return (int) Duration.between(dueDateAt, compareTo).toDays();
+
+        return (int) Duration
+                .between(
+                        dueDateAt,
+                        compareTo
+                )
+                .toDays();
     }
 
     public BigDecimal calculateLateFee() {
         int days = calculateLateDays();
-        return LATE_FEE_PER_DAY.multiply(BigDecimal.valueOf(days));
-    }
 
+        return LATE_FEE_PER_DAY.multiply(
+                BigDecimal.valueOf(days)
+        );
+    }
 }
