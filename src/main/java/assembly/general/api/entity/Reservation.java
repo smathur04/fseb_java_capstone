@@ -62,6 +62,7 @@ public class Reservation {
     @Column
     private BigDecimal lateFee;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Condition returnCondition;
 
