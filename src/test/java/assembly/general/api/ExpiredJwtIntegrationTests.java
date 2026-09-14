@@ -104,6 +104,6 @@ class ExpiredJwtIntegrationTests {
                                         "Bearer " + token
                                 )
                 )
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 }

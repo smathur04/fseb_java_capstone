@@ -250,7 +250,7 @@ class ApiIntegrationTests {
         mockMvc.perform(
                         get("/api/users/profile")
                 )
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isForbidden());
     }
 
     @Test
